@@ -1,0 +1,1 @@
+package cusis.platform;// Decouple the platform, such as command prompt/ UIpublic interface IPlatform {	public void show(String msg);}
