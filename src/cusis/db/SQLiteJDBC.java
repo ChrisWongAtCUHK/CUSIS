@@ -11,7 +11,7 @@ public class SQLiteJDBC {
 	private ArrayList<Student> students = new ArrayList<Student>();
 	
 	// Constructor
-	public SQLiteJDBC(String dbFile, String query){
+	public SQLiteJDBC(String classname, Object[] constructorArgs, String dbFile, String query){
 		try {
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
@@ -21,7 +21,7 @@ public class SQLiteJDBC {
 		
 		Connection connection = null; 
         ResultSet rs = null; 
-        try{ 
+        try { 
             // create a database connection 
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);		// TODO: how to get db in other directory 
             Statement statement = connection.createStatement(); 
@@ -29,13 +29,13 @@ public class SQLiteJDBC {
             rs = statement.executeQuery(query); 
             while(rs.next()){ 
                 // read the result set 
-				/* TODO: how to reuse SQLiteJDBC.java for two tables(Students & Courses) */
+				/* TODO: how to reuse SQLiteJDBC.java for two tables(Students & Courses), Reflect !! */
                 this.students.add(new Student(rs.getString("name"),   
                         rs.getString("sid"),   
                         rs.getString("major"))); 
             } 
               
-        }catch(SQLException sqlExc){ 
+        } catch(SQLException sqlExc){ 
               // if the error message is "out of memory",  
               // it probably means no database file is found 
               System.err.println(sqlExc.getMessage()); 

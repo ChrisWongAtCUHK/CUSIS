@@ -11,6 +11,7 @@
 	<!-- compile the program -->
 	<target name="compile">
 		<javac includeantruntime="false" srcdir="./src" destdir="${base-dir}" classpath="${class-path}" >
+			<compilerarg value="-Xlint"/>
 		</javac>
 	</target>
 
