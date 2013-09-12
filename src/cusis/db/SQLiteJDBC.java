@@ -1,15 +1,24 @@
 package cusis.db;
 
 import java.sql.*;
+import java.util.*;
 
 import cusis.courses.*;
 import cusis.students.*;
 
-// 
+// Database management class
 public class SQLiteJDBC {
+	private ArrayList<Student> students = new ArrayList<Student>();
 	
 	// Constructor
 	public SQLiteJDBC(String dbFile, String query){
+		try {
+		// load the sqlite-JDBC driver using the current class loader
+		Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException cnf){
+			cnf.printStackTrace();
+		}
+		
 		Connection connection = null; 
         ResultSet rs = null; 
         try{ 
@@ -20,10 +29,10 @@ public class SQLiteJDBC {
             rs = statement.executeQuery(query); 
             while(rs.next()){ 
                 // read the result set 
-                /*this.addElement(new Audio(rs.getString("filename"),   
-                        rs.getString("songTitle"),   
-                        rs.getString("singer"), 
-                        rs.getString("album"))); */
+				/* TODO: how to reuse SQLiteJDBC.java for two tables(Students & Courses) */
+                this.students.add(new Student(rs.getString("name"),   
+                        rs.getString("sid"),   
+                        rs.getString("major"))); 
             } 
               
         }catch(SQLException sqlExc){ 
@@ -39,5 +48,9 @@ public class SQLiteJDBC {
 			  System.err.println(sqlExc); 
 			} 
         }
+	}
+	
+	public ArrayList<Student> getStudents(){
+		return this.students;
 	}
 }
