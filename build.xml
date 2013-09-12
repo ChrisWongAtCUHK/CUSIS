@@ -2,7 +2,10 @@
 	<project basedir="." default="build" name="CUSIS">
 	<property name="project-name" value="CUSIS"/>
 	<property name="main-class" value="cusis.CUSISDemo"/>
-	<property name="class-path" value="."/>
+	<property name="lib-dir" value="./lib"/>
+	<property name="db-dir" value="./db"/>
+	<property name="sqlite3-jar" value="sqlite-jdbc-3.7.2.jar" />
+	<property name="class-path" value=".;${lib-dir}/${sqlite3-jar}"/>
 	<property name="base-dir" value="bin"/>
 
 	<!-- compile the program -->
@@ -18,13 +21,21 @@
 			<manifest>
 				<attribute name="Main-Class" value="${main-class}" />
 			</manifest>
+			<zipfileset src="${lib-dir}/${sqlite3-jar}" />
 		</jar>
 	</target>
 
 	<!-- Run the jar of program -->
 	<target name="run">
 		<java jar="deploy/${project-name}.jar" fork="true">
-			 <arg value="program.txt"/>
 		</java>
 	</target>
+	
+	<!-- Database management -->
+	<target name="sql">
+		<exec dir="${db-dir}" executable="sqlite3" input="${db-dir}/reset.sql">
+			<arg value="info.db"/>
+		</exec>
+	</target>
+	
 </project>
