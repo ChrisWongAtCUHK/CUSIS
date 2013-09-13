@@ -14,11 +14,11 @@ public class CUSISDemo {
 		IPlatform cusis = new CmdPlatform();
 		cusis.show("Kill us!!");
 		
-		SQLiteJDBC studentTable = new SQLiteJDBC("cusis.students.students.Student", new Object[]{}, "info.db", "SELECT * FROM Students");
-		ArrayList<Student> students = studentTable.getStudents();
+		SQLiteJDBC studentTable = new SQLiteJDBC("cusis.students.students.Student", "info.db", "SELECT * FROM Students");
+		/*ArrayList<Student> students = studentTable.getStudents();
 		for(Student student: students){
 			cusis.show(student.getName() + " is a " + student.getMajor() + " student with id: " + student.getSid());
-		}
+		}*/
 		
 		// http://kodejava.org/how-do-i-create-object-using-constructor-object/
 		Class<?> clazz = Student.class;
@@ -28,8 +28,8 @@ public class CUSISDemo {
 			Constructor<?> constructor = clazz.getConstructor(new Class[] {String.class, String.class, String.class});
 
 			Student object = (Student) constructor.newInstance(new Object[] {"Chris Wong", "123456", "CS"});
-			@SuppressWarnings("rawtypes")
-			Method[] methods = {clazz.getMethod("getName", new Class[]{}), clazz.getMethod("getSid", new Class[]{}), clazz.getMethod("getMajor", new Class[]{})};
+
+			Method[] methods = Student.getSetFieldsMethods();
 			String name = (String)methods[0].invoke(object, new Object[]{});
 			String sid = (String)methods[1].invoke(object, new Object[]{});
 			String major = (String)methods[2].invoke(object, new Object[]{});

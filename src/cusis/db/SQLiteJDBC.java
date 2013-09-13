@@ -12,7 +12,7 @@ public class SQLiteJDBC {
 	private ArrayList<Student> students = new ArrayList<Student>();
 	
 	// Constructor
-	public SQLiteJDBC(String classname, Object[] constructorArgs, String dbFile, String query){
+	public SQLiteJDBC(String classname, String dbFile, String query){
 		try {
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
@@ -36,6 +36,7 @@ public class SQLiteJDBC {
 				ResultSet rs = statement.executeQuery(query);
 				@SuppressWarnings("rawtypes")
 				Method[] methods = {clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class})};
+				
 				while(rs.next()){
 					// read the result set and creat an object from database
 					Student student = new Student();

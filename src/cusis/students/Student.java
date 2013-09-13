@@ -1,9 +1,13 @@
 package cusis.students;
 
+import java.lang.reflect.*;
+import java.sql.*;
+
 import cusis.courses.*;
+import cusis.db.*;
 
 // victim who is killed by CUSIS
-public class Student {
+public class Student extends SQLiteObject {
 	private String name;
 	private String sid;
 	private String major;
@@ -41,5 +45,35 @@ public class Student {
 	
 	public String getMajor(){
 		return this.major;
+	}
+	
+	// Define the method array such that ResutlSet would know to get data
+	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
+		Class<?> clazz = ResultSet.class;
+		try {
+			// Success
+			return new Method[]{clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class})};
+		}catch (NoSuchMethodException e) {
+			// for java.lang.reflect.Method
+			e.printStackTrace();
+		} 
+		
+		// Fail, must be checked
+		return null;
+	}
+	
+	// Define the method array such that a Student instance would know to set fields
+	public static @SuppressWarnings("rawtypes") Method[] getSetFieldsMethods(){
+		Class<?> clazz = Student.class;
+		try {
+			// Success
+			return new Method[]{clazz.getMethod("getName", new Class[]{}), clazz.getMethod("getSid", new Class[]{}), clazz.getMethod("getMajor", new Class[]{})};
+		}catch (NoSuchMethodException e) {
+			// for java.lang.reflect.Method
+			e.printStackTrace();
+		} 
+		
+		// Fail, must be checked
+		return null;
 	}
 }
