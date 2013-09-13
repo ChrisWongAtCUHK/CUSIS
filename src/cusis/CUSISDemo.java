@@ -22,22 +22,39 @@ public class CUSISDemo {
 		
 		// http://kodejava.org/how-do-i-create-object-using-constructor-object/
 		Class<?> clazz = Student.class;
-		
+		ArrayList<? extends SQLiteObject> sqlObjs = new ArrayList<SQLiteObject>();
         try {
+			//@SuppressWarnings("rawtypes")
+			//Constructor<?> constructor = clazz.getConstructor(new Class[] {String.class, String.class, String.class});
+
+			//Student student = (Student) constructor.newInstance(new Object[] {"Chris Wong", "123456", "CS"});
+			
+			Constructor[] ctors = clazz.getDeclaredConstructors();
 			@SuppressWarnings("rawtypes")
-			Constructor<?> constructor = clazz.getConstructor(new Class[] {String.class, String.class, String.class});
-
-			Student object = (Student) constructor.newInstance(new Object[] {"Chris Wong", "123456", "CS"});
-
-			Method[] methods = Student.getSetFieldsMethods();
-			String name = (String)methods[0].invoke(object, new Object[]{});
-			String sid = (String)methods[1].invoke(object, new Object[]{});
-			String major = (String)methods[2].invoke(object, new Object[]{});
+			Constructor ctor = null;
+			for (int i = 0; i < ctors.length; i++) {
+				ctor = ctors[i];
+				if (ctor.getGenericParameterTypes().length == 0)
+					break;
+			}
+			
+			ctor.setAccessible(true);
+			Object student = ctor.newInstance();
+			student = clazz.cast(student);
+			Method[] setMethods = Student.fieldsMethodsSetter();
+			setMethods[0].invoke(student, new Object[]{"Chris Wong"});
+			setMethods[1].invoke(student, new Object[]{"123456"});
+			setMethods[2].invoke(student, new Object[]{"CS"});
+			
+			Method[] getMethods = Student.fieldsMethodsGetter();
+			String name = (String)getMethods[0].invoke(student, new Object[]{});
+			String sid = (String)getMethods[1].invoke(student, new Object[]{});
+			String major = (String)getMethods[2].invoke(student, new Object[]{});
 			
 			cusis.show(name + " is a " + major + " student with id: " + sid);
-        } catch (NoSuchMethodException e) {
+        /*} catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
-            e.printStackTrace();
+            e.printStackTrace();*/
         } catch (InstantiationException e) {
 			// for constructor.newInstance
             e.printStackTrace();

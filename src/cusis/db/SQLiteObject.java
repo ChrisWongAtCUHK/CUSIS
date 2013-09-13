@@ -3,16 +3,28 @@ package cusis.db;
 import java.lang.reflect.*;
 
 // Use reflect to invoke method to get data by SQLite
-public abstract class SQLiteObject {
+public class SQLiteObject {
 
+	// Constructor
+	public SQLiteObject(){
+	}
+	
+	// The should be called by the children
+	public static Class<?> getSelfClass(){
+		return null;
+	}
+	
 	// Define the method array such that ResutlSet would know to get data
 	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
 		return null;
 	}
 	
-
+	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
+		return null;
+	}
+	
 	// Define the method array such that the instance would know to set fields
-	public static @SuppressWarnings("rawtypes") Method[] getSetFieldsMethods(){
+	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsSetter(){
 		return null;
 	}
 }

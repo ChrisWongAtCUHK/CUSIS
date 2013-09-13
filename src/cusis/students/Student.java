@@ -47,6 +47,11 @@ public class Student extends SQLiteObject {
 		return this.major;
 	}
 	
+	// TODO: dunno who should be called
+	public static Class<?> getSelfClass(){
+		return Student.class;
+	}
+	
 	// Define the method array such that ResutlSet would know to get data
 	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
 		Class<?> clazz = ResultSet.class;
@@ -62,8 +67,23 @@ public class Student extends SQLiteObject {
 		return null;
 	}
 	
+	// Define the method array such that the instance would know to set fields
+	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsSetter(){
+		Class<?> clazz = Student.class;
+		try {
+			// Success
+			return new Method[]{clazz.getMethod("setName", new Class[]{String.class}), clazz.getMethod("setSid", new Class[]{String.class}), clazz.getMethod("setMajor", new Class[]{String.class})};
+		}catch (NoSuchMethodException e) {
+			// for java.lang.reflect.Method
+			e.printStackTrace();
+		} 
+		
+		// Fail, must be checked
+		return null;
+	}
+	
 	// Define the method array such that a Student instance would know to set fields
-	public static @SuppressWarnings("rawtypes") Method[] getSetFieldsMethods(){
+	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
 		Class<?> clazz = Student.class;
 		try {
 			// Success
