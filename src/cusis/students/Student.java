@@ -8,7 +8,11 @@ public class Student {
 	private String sid;
 	private String major;
 	
-	// Constructor
+	// Constructor 1
+	public Student(){
+	}
+	
+	// Constructor 2
 	public Student(String name, String sid, String major){
 		this.name = name;
 		this.sid = sid;

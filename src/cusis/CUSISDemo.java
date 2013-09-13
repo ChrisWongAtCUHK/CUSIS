@@ -1,8 +1,8 @@
 package cusis;
 
-import java.util.*;
 import java.lang.reflect.*;
 import java.sql.*;
+import java.util.*;
 
 import cusis.courses.*;
 import cusis.db.*;
@@ -14,12 +14,11 @@ public class CUSISDemo {
 		IPlatform cusis = new CmdPlatform();
 		cusis.show("Kill us!!");
 		
-		//SQLiteJDBC studentTable = new SQLiteJDBC("cusis.students.students.Student", new Object[]{}, "info.db", "SELECT * FROM Students");
-		//ArrayList<Student> students = studentTable.getStudents();
-		//ArrayList<Student> students = new ArrayList<Student>();
-		//students.add(new Student("a", "1", "x"));
-		//students.add(new Student("b", "2", "y"));
-		//students.add(new Student("c", "3", "z"));
+		SQLiteJDBC studentTable = new SQLiteJDBC("cusis.students.students.Student", new Object[]{}, "info.db", "SELECT * FROM Students");
+		ArrayList<Student> students = studentTable.getStudents();
+		for(Student student: students){
+			cusis.show(student.getName() + " is a " + student.getMajor() + " student with id: " + student.getSid());
+		}
 		
 		// http://kodejava.org/how-do-i-create-object-using-constructor-object/
 		Class<?> clazz = Student.class;

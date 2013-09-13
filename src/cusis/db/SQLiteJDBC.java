@@ -1,5 +1,6 @@
 package cusis.db;
 
+import java.lang.reflect.*;
 import java.sql.*;
 import java.util.*;
 
@@ -20,20 +21,55 @@ public class SQLiteJDBC {
 		}
 		
 		Connection connection = null; 
-        ResultSet rs = null; 
-        try { 
+		Class<?> clazz = ResultSet.class;
+        //ResultSet rs = null; 
+        try {
             // create a database connection 
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);		// TODO: how to get db in other directory 
             Statement statement = connection.createStatement(); 
             statement.setQueryTimeout(30);  										// set timeout to 30 sec. 
-            rs = statement.executeQuery(query); 
+            
+			
+			try {
+				@SuppressWarnings("rawtypes")
+
+				ResultSet rs = statement.executeQuery(query);
+				@SuppressWarnings("rawtypes")
+				Method[] methods = {clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class})};
+				while(rs.next()){
+					// read the result set and creat an object from database
+					Student student = new Student();
+					student.setName((String)methods[0].invoke(rs, new Object[]{"name"}));
+					student.setSid((String)methods[1].invoke(rs, new Object[]{"sid"}));
+					student.setMajor((String)methods[2].invoke(rs, new Object[]{"major"}));
+					this.students.add(student);	
+				}
+		
+			} catch (NoSuchMethodException e) {
+				// for java.lang.reflect.Method
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// for invoke()
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			/*rs = statement.executeQuery(query); 
             while(rs.next()){ 
                 // read the result set 
-				/* TODO: how to reuse SQLiteJDBC.java for two tables(Students & Courses), Reflect !! */
+				// TODO: how to reuse SQLiteJDBC.java for two tables(Students & Courses), Reflect !! 
                 this.students.add(new Student(rs.getString("name"),   
                         rs.getString("sid"),   
-                        rs.getString("major"))); 
-            } 
+                        rs.getString("major")));
+            }*/
               
         } catch(SQLException sqlExc){ 
               // if the error message is "out of memory",  
