@@ -30,19 +30,26 @@ public class SQLiteJDBC {
             statement.setQueryTimeout(30);  										// set timeout to 30 sec. 
             
 			try {
-				@SuppressWarnings("rawtypes")
-
 				ResultSet rs = statement.executeQuery(query);
-				@SuppressWarnings("rawtypes")
-				Method[] methods = {rsClazz.getMethod("getString", new Class[]{String.class}), rsClazz.getMethod("getString", new Class[]{String.class}), rsClazz.getMethod("getString", new Class[]{String.class})};
 				
+				// Get the methods such that ResutlSet would know to get data
+				@SuppressWarnings("rawtypes")
+				Method getRSMethods = clazz.getMethod("getRSMethods", new Class[]{});
+				Method[] methods = (Method[])getRSMethods.invoke(null, new Object[]{});			// invoke static method without argument
+			
+				// Get the arguments for methods such that ResutlSet would know to get data
+				@SuppressWarnings("rawtypes")
+				Method getRSArgs = clazz.getMethod("getRSArgs", new Class[]{});
+				Object[][] argsList = (Object[][])getRSArgs.invoke(null, new Object[]{});	// invoke static method without argument
+				
+				// Loop through the data base row by row
 				while(rs.next()){
 					// read the result set and creat an object from database
 					Student student = new Student();
-					student.setName((String)methods[0].invoke(rs, new Object[]{"name"}));
-					student.setSid((String)methods[1].invoke(rs, new Object[]{"sid"}));
-					student.setMajor((String)methods[2].invoke(rs, new Object[]{"major"}));
-					//this.students.add(student);	
+					student.setName((String)methods[0].invoke(rs, argsList[0]));
+					student.setSid((String)methods[1].invoke(rs, argsList[1]));
+					student.setMajor((String)methods[2].invoke(rs, argsList[2]));
+					this.students.add(student);	
 				}
 		
 			} catch (NoSuchMethodException e) {

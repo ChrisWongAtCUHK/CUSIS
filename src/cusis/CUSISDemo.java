@@ -18,10 +18,10 @@ public class CUSISDemo {
 		cusis.show("Kill us!!");
 		
 		SQLiteJDBC studentTable = new SQLiteJDBC(studentClass, "info.db", "SELECT * FROM Students");
-		/*ArrayList<Student> students = studentTable.getStudents();
+		ArrayList<Student> students = studentTable.getStudents();
 		for(Student student: students){
 			cusis.show(student.getName() + " is a " + student.getMajor() + " student with id: " + student.getSid());
-		}*/
+		}
 		
 		// http://kodejava.org/how-do-i-create-object-using-constructor-object/
 		

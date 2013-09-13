@@ -71,8 +71,8 @@ public class Student extends SQLiteObject {
 	public static Object[][] getRSArgs(){
 		Object[][] args = new Object[3][];
 		args[0] = new Object[]{"name"};
-		args[0] = new Object[]{"sid"};
-		args[0] = new Object[]{"major"};
+		args[1] = new Object[]{"sid"};
+		args[2] = new Object[]{"major"};
 		return args;
 	}
 	
