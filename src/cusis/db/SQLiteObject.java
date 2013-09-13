@@ -14,8 +14,13 @@ public class SQLiteObject {
 		return null;
 	}
 	
-	// Define the method array such that ResutlSet would know to get data
+	// Define the methods such that ResutlSet would know to get data
 	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
+		return null;
+	}
+	
+	// Define the arguments for methods such that ResutlSet would know to get data
+	public static Object[][] getRSArgs(){
 		return null;
 	}
 	

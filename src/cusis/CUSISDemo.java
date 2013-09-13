@@ -10,51 +10,58 @@ import cusis.platform.*;
 import cusis.students.*;
 
 public class CUSISDemo {
-	public static void main(String[] args){
+
+	public static @SuppressWarnings("rawtypes") void main(String[] args){
 		IPlatform cusis = new CmdPlatform();
+		Class<?> studentClass = Student.class;
+		
 		cusis.show("Kill us!!");
 		
-		SQLiteJDBC studentTable = new SQLiteJDBC("cusis.students.students.Student", "info.db", "SELECT * FROM Students");
+		SQLiteJDBC studentTable = new SQLiteJDBC(studentClass, "info.db", "SELECT * FROM Students");
 		/*ArrayList<Student> students = studentTable.getStudents();
 		for(Student student: students){
 			cusis.show(student.getName() + " is a " + student.getMajor() + " student with id: " + student.getSid());
 		}*/
 		
 		// http://kodejava.org/how-do-i-create-object-using-constructor-object/
-		Class<?> clazz = Student.class;
-		ArrayList<? extends SQLiteObject> sqlObjs = new ArrayList<SQLiteObject>();
+		
+		ArrayList<? super SQLiteObject> sqliteObjs = new ArrayList<SQLiteObject>();
         try {
-			//@SuppressWarnings("rawtypes")
-			//Constructor<?> constructor = clazz.getConstructor(new Class[] {String.class, String.class, String.class});
-
-			//Student student = (Student) constructor.newInstance(new Object[] {"Chris Wong", "123456", "CS"});
-			
-			Constructor[] ctors = clazz.getDeclaredConstructors();
-			@SuppressWarnings("rawtypes")
-			Constructor ctor = null;
-			for (int i = 0; i < ctors.length; i++) {
-				ctor = ctors[i];
-				if (ctor.getGenericParameterTypes().length == 0)
+			// Reflect constructor
+			Constructor[] constructors = studentClass.getDeclaredConstructors();
+			Constructor constructor = null;
+			for (int i = 0; i < constructors.length; i++) {
+				constructor = constructors[i];
+				if (constructor.getGenericParameterTypes().length == 0)
 					break;
 			}
 			
-			ctor.setAccessible(true);
-			Object student = ctor.newInstance();
-			student = clazz.cast(student);
-			Method[] setMethods = Student.fieldsMethodsSetter();
-			setMethods[0].invoke(student, new Object[]{"Chris Wong"});
-			setMethods[1].invoke(student, new Object[]{"123456"});
-			setMethods[2].invoke(student, new Object[]{"CS"});
+			constructor.setAccessible(true);
+			Object student = constructor.newInstance();
+			student = studentClass.cast(student);
 			
-			Method[] getMethods = Student.fieldsMethodsGetter();
-			String name = (String)getMethods[0].invoke(student, new Object[]{});
-			String sid = (String)getMethods[1].invoke(student, new Object[]{});
-			String major = (String)getMethods[2].invoke(student, new Object[]{});
+			// TODO: set methods test
+			Method fieldsMethodsSetter = studentClass.getMethod("fieldsMethodsSetter", new Class[]{});
+			Method[] setMethods = (Method[])fieldsMethodsSetter.invoke(null, new Object[]{});
+			
+			setMethods[0].invoke(student, "Chris Wong");
+			setMethods[1].invoke(student, "123456");
+			setMethods[2].invoke(student, "CS");
+			// TODO: how to solved sqliteObjs.add((Student)studentClass.cast(student));
+			sqliteObjs.add((Student)studentClass.cast(student));
+			
+			// TODO: get methods test
+			Method fieldsMethodsGetter = studentClass.getMethod("fieldsMethodsGetter", new Class[]{});
+			Method[] getMethods = (Method[])fieldsMethodsGetter.invoke(null, new Object[]{});
+
+			String name = (String)getMethods[0].invoke(sqliteObjs.get(0), new Object[]{});
+			String sid = (String)getMethods[1].invoke(sqliteObjs.get(0), new Object[]{});
+			String major = (String)getMethods[2].invoke(sqliteObjs.get(0), new Object[]{});
 			
 			cusis.show(name + " is a " + major + " student with id: " + sid);
-        /*} catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
-            e.printStackTrace();*/
+            e.printStackTrace();
         } catch (InstantiationException e) {
 			// for constructor.newInstance
             e.printStackTrace();

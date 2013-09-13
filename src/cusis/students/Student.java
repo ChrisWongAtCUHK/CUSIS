@@ -52,7 +52,7 @@ public class Student extends SQLiteObject {
 		return Student.class;
 	}
 	
-	// Define the method array such that ResutlSet would know to get data
+	// Define the methods such that ResutlSet would know to get data
 	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
 		Class<?> clazz = ResultSet.class;
 		try {
@@ -67,12 +67,26 @@ public class Student extends SQLiteObject {
 		return null;
 	}
 	
+	// Define the arguments for methods such that ResutlSet would know to get data
+	public static Object[][] getRSArgs(){
+		Object[][] args = new Object[3][];
+		args[0] = new Object[]{"name"};
+		args[0] = new Object[]{"sid"};
+		args[0] = new Object[]{"major"};
+		return args;
+	}
+	
 	// Define the method array such that the instance would know to set fields
 	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsSetter(){
 		Class<?> clazz = Student.class;
+		Method[] methods = new Method[3];
 		try {
+			methods[0] = clazz.getMethod("setName", new Class[]{String.class});
+			methods[1] = clazz.getMethod("setSid", new Class[]{String.class});
+			methods[2] = clazz.getMethod("setMajor", new Class[]{String.class});
+			
 			// Success
-			return new Method[]{clazz.getMethod("setName", new Class[]{String.class}), clazz.getMethod("setSid", new Class[]{String.class}), clazz.getMethod("setMajor", new Class[]{String.class})};
+			return methods;
 		}catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
 			e.printStackTrace();
@@ -85,9 +99,15 @@ public class Student extends SQLiteObject {
 	// Define the method array such that a Student instance would know to set fields
 	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
 		Class<?> clazz = Student.class;
+		Method[] methods = new Method[3];
 		try {
+			methods[0] = clazz.getMethod("getName", new Class[]{});
+			methods[1] = clazz.getMethod("getSid", new Class[]{});
+			methods[2] = clazz.getMethod("getMajor", new Class[]{});
+			
 			// Success
-			return new Method[]{clazz.getMethod("getName", new Class[]{}), clazz.getMethod("getSid", new Class[]{}), clazz.getMethod("getMajor", new Class[]{})};
+			//return new Method[]{clazz.getMethod("getName", new Class[]{}), clazz.getMethod("getSid", new Class[]{}), clazz.getMethod("getMajor", new Class[]{})};
+			return methods;
 		}catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
 			e.printStackTrace();
