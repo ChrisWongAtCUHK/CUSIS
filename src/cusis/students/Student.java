@@ -7,7 +7,7 @@ import cusis.courses.*;
 import cusis.db.*;
 
 // victim who is killed by CUSIS
-public class Student extends SQLiteObject {
+public class Student implements SQLiteObject {
 	private String name;
 	private String sid;
 	private String major;
@@ -48,12 +48,18 @@ public class Student extends SQLiteObject {
 	}
 	
 	// TODO: dunno who should be called
-	public static Class<?> getSelfClass(){
+	public Class<?> getSelfClass(){
 		return Student.class;
 	}
 	
+	// Factory method to handle static method(s) of interface, should be not necessary in Java 1.8?(TODO)
+	public static Student dummyInstance(){
+		return new Student();
+	}
+	
 	// Define the methods such that ResutlSet would know to get data
-	public static @SuppressWarnings("rawtypes") Method[] getRSMethods(){
+	@Override
+	public @SuppressWarnings("rawtypes") Method[] getRSMethods(){
 		Class<?> clazz = ResultSet.class;
 		try {
 			// Success
@@ -68,7 +74,8 @@ public class Student extends SQLiteObject {
 	}
 	
 	// Define the arguments for methods such that ResutlSet would know to get data
-	public static Object[][] getRSArgs(){
+	@Override
+	public Object[][] getRSArgs(){
 		Object[][] args = new Object[3][];
 		args[0] = new Object[]{"name"};
 		args[1] = new Object[]{"sid"};
@@ -77,7 +84,8 @@ public class Student extends SQLiteObject {
 	}
 	
 	// Define the method array such that the instance would know to set fields
-	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsSetter(){
+	@Override
+	public @SuppressWarnings("rawtypes") Method[] fieldsMethodsSetter(){
 		Class<?> clazz = Student.class;
 		Method[] methods = new Method[3];
 		try {
@@ -97,7 +105,8 @@ public class Student extends SQLiteObject {
 	}
 	
 	// Define the method array such that a Student instance would know to set fields
-	public static @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
+	@Override
+	public @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
 		Class<?> clazz = Student.class;
 		Method[] methods = new Method[3];
 		try {
