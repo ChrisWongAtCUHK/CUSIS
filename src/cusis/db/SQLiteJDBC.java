@@ -4,16 +4,12 @@ import java.lang.reflect.*;
 import java.sql.*;
 import java.util.*;
 
-// TODO: should be deleted
-import cusis.courses.*;
-import cusis.students.*;
-
 // Database management class
 public class SQLiteJDBC {
 	private ArrayList<Object> sqliteObjs = new ArrayList<Object>();
 	
 	// Constructor
-	public SQLiteJDBC(Class<?> clazz, String dbFile, String query){
+	public @SuppressWarnings("rawtypes") SQLiteJDBC(Class<?> clazz, String dbFile, String query){
 		try {
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
@@ -23,7 +19,11 @@ public class SQLiteJDBC {
 		
 		Connection connection = null; 
 		Class<?> rsClazz = ResultSet.class;
-        //ResultSet rs = null; 
+		
+		// Set methods declaration
+		Method fieldsMethodsSetter = null;
+		Method[] setMethods = null;
+
         try {
             // create a database connection 
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);		// TODO: how to get db in other directory 
@@ -57,16 +57,23 @@ public class SQLiteJDBC {
 				Method getRSArgs = clazz.getMethod("getRSArgs", new Class[]{});
 				Object[][] argsList = (Object[][])getRSArgs.invoke(dummyObj, new Object[]{});	// invoke static method without argument
 				
+				// Set methods invocation
+				fieldsMethodsSetter = clazz.getMethod("fieldsMethodsSetter", new Class[]{});
+				setMethods = (Method[])fieldsMethodsSetter.invoke(dummyObj, new Object[]{});
+			
 				// Loop through the data base row by row
 				while(rs.next()){
-					// read the result set and creat an object from database
-					Student student = new Student();
-					student.setName((String)methods[0].invoke(rs, argsList[0]));
-					student.setSid((String)methods[1].invoke(rs, argsList[1]));
-					student.setMajor((String)methods[2].invoke(rs, argsList[2]));
-					this.sqliteObjs.add(student);	
+					Object obj = constructor.newInstance();
+					obj = clazz.cast(obj);
+	
+					// TODO: loop through the methods by 2D nested loop
+					for(int i = 0; i < setMethods.length; i++){
+						setMethods[i].invoke(obj, (String)methods[i].invoke(rs, argsList[i]));
+						
+					}
+					this.sqliteObjs.add(obj);
 				}
-		
+				
 			} catch (InstantiationException e) {
 				// for constructor.newInstance
 				e.printStackTrace();

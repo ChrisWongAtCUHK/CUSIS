@@ -10,7 +10,7 @@
 	<property name="base-dir" value="bin"/>
 
 	<!-- compile the program -->
-	<target name="compile">
+	<target name="compile" depends="sql">
 		<javac includeantruntime="false" srcdir="./src" destdir="${base-dir}" classpath="${class-path}" >
 			<compilerarg value="-Xlint"/>
 		</javac>
