@@ -33,7 +33,6 @@ public class SQLiteJDBC {
 			try {
 				ResultSet rs = statement.executeQuery(query);
 				
-				// Dummy object to call static method(s), should be not necessary in Java 1.8?(TODO)
 				// Reflect constructor
 				Constructor[] constructors = clazz.getDeclaredConstructors();
 				@SuppressWarnings("rawtypes")
@@ -43,19 +42,20 @@ public class SQLiteJDBC {
 					if (constructor.getGenericParameterTypes().length == 0)
 						break;
 				}
-				
 				constructor.setAccessible(true);
+				
+				// Dummy object to call static method(s), should be not necessary in Java 1.8?(TODO)
 				Object dummyObj = constructor.newInstance();
 			
 				// Get the methods such that ResutlSet would know to get data
 				@SuppressWarnings("rawtypes")
 				Method getRSMethods = clazz.getMethod("getRSMethods", new Class[]{});
-				Method[] methods = (Method[])getRSMethods.invoke(dummyObj, new Object[]{});			// invoke static method without argument
+				Method[] methods = (Method[])getRSMethods.invoke(dummyObj, new Object[]{});
 			
 				// Get the arguments for methods such that ResutlSet would know to get data
 				@SuppressWarnings("rawtypes")
 				Method getRSArgs = clazz.getMethod("getRSArgs", new Class[]{});
-				Object[][] argsList = (Object[][])getRSArgs.invoke(dummyObj, new Object[]{});	// invoke static method without argument
+				Object[][] argsList = (Object[][])getRSArgs.invoke(dummyObj, new Object[]{});
 				
 				// Set methods invocation
 				fieldsMethodsSetter = clazz.getMethod("fieldsMethodsSetter", new Class[]{});
@@ -65,12 +65,14 @@ public class SQLiteJDBC {
 				while(rs.next()){
 					Object obj = constructor.newInstance();
 					obj = clazz.cast(obj);
-	
-					// TODO: loop through the methods by 2D nested loop
+
+					// Loop through the set methods
 					for(int i = 0; i < setMethods.length; i++){
-						setMethods[i].invoke(obj, (String)methods[i].invoke(rs, argsList[i]));
-						
+						//setMethods[i].invoke(obj, (String)methods[i].invoke(rs, argsList[i]));
+						setMethods[i].invoke(obj, methods[i].invoke(rs, argsList[i]));;
 					}
+					
+					// Add the data(as an row)
 					this.sqliteObjs.add(obj);
 				}
 				
@@ -108,6 +110,7 @@ public class SQLiteJDBC {
         }
 	}
 	
+	// Return the entire data
 	public ArrayList<Object> getSqliteObjs(){
 		return this.sqliteObjs;
 	}

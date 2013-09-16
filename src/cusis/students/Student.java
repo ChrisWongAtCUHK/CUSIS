@@ -47,23 +47,30 @@ public class Student implements SQLiteObject {
 		return this.major;
 	}
 	
-	// TODO: dunno who should be called
-	public Class<?> getSelfClass(){
-		return Student.class;
-	}
-	
 	// Factory method to handle static method(s) of interface, should be not necessary in Java 1.8?(TODO)
 	public static Student dummyInstance(){
 		return new Student();
 	}
 	
+	// TODO: dunno who should be called
+	@Override
+	public Class<?> getSelfClass(){
+		return Student.class;
+	}
+	
+	
 	// Define the methods such that ResutlSet would know to get data
 	@Override
 	public @SuppressWarnings("rawtypes") Method[] getRSMethods(){
 		Class<?> clazz = ResultSet.class;
+		Method[] methods = new Method[3];
 		try {
+			methods[0] = clazz.getMethod("getString", new Class[]{String.class});
+			methods[1] = clazz.getMethod("getString", new Class[]{String.class});
+			methods[2] = clazz.getMethod("getString", new Class[]{String.class});
+			
 			// Success
-			return new Method[]{clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class}), clazz.getMethod("getString", new Class[]{String.class})};
+			return methods;
 		}catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
 			e.printStackTrace();
@@ -104,7 +111,7 @@ public class Student implements SQLiteObject {
 		return null;
 	}
 	
-	// Define the method array such that a Student instance would know to set fields
+	// How the data can be get
 	@Override
 	public @SuppressWarnings("rawtypes") Method[] fieldsMethodsGetter(){
 		Class<?> clazz = Student.class;
@@ -115,7 +122,6 @@ public class Student implements SQLiteObject {
 			methods[2] = clazz.getMethod("getMajor", new Class[]{});
 			
 			// Success
-			//return new Method[]{clazz.getMethod("getName", new Class[]{}), clazz.getMethod("getSid", new Class[]{}), clazz.getMethod("getMajor", new Class[]{})};
 			return methods;
 		}catch (NoSuchMethodException e) {
 			// for java.lang.reflect.Method
