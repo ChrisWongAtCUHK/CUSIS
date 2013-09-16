@@ -181,7 +181,7 @@ public class CUSISDemo {
 				String courseCode = (String)getMethods[0].invoke(course, new Object[]{});
 				int availableSeat = (int)getMethods[1].invoke(course, new Object[]{});
 				int waitListCapacity = (int)getMethods[2].invoke(course, new Object[]{});
-				cusis.show(courseCode + " has " + availableSeat + " available seat(s) with " + waitListCapacity + " in wait list.");
+				cusis.show(courseCode + " has " + availableSeat + " available seat(s) with " + waitListCapacity + " seat(s) in wait list.");
 			}
 		} catch (IllegalAccessException e) {
             e.printStackTrace();
